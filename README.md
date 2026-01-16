@@ -90,8 +90,14 @@ websocket-broadcast-server/
 git clone https://github.com/jvcostta/websocket-broadcast-server.git
 cd websocket-broadcast-server
 
-# Inicie os containers
+# Inicie os containers (faz build automaticamente na primeira vez)
 docker-compose up -d
+
+# Se quiser ver o build acontecendo, use:
+docker-compose up --build
+```
+
+> **Nota:** O comando `up -d` automaticamente faz o build das imagens se elas não existirem. Após mudanças no código, use `docker-compose up -d --build` para rebuildar.
 
 # Visualize os logs
 docker-compose logs -f
@@ -189,14 +195,21 @@ npm run preview
 ### Com Docker
 
 ```bash
-# Executar todos os testes
-docker-compose exec backend pytest ../tests/ -v
+# Executar todos os testes (31 testes)
+docker-compose exec backend pytest /tests/ -v
 
-# Testes do backend apenas
-docker-compose exec backend pytest ../tests/backend/ -v
+# Testes do backend apenas (26 testes)
+docker-compose exec backend pytest /tests/backend/ -v
+
+# Testes de integração (5 testes)
+docker-compose exec backend pytest /tests/integration/ -v
 
 # Testes com cobertura
-docker-compose exec backend pytest ../tests/backend/ --cov=. --cov-report=html
+docker-compose exec backend pytest /tests/backend/ --cov=/app --cov-report=html
+
+# Ver relatório de cobertura (será gerado em backend/htmlcov/)
+# Copiar relatório do container para host
+docker cp websocket-backend:/app/htmlcov ./htmlcov
 ```
 
 ### Localmente

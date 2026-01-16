@@ -30,9 +30,11 @@ O projeto utiliza uma arquitetura multi-container com:
 git clone https://github.com/jvcostta/websocket-broadcast-server.git
 cd websocket-broadcast-server
 
-# Inicie tudo com um comando
+# Inicie tudo com um comando (build automático na primeira vez)
 docker-compose up -d
 ```
+
+> **💡 Nota:** O comando `docker-compose up -d` automaticamente faz o build das imagens na primeira execução. Você não precisa executar `docker-compose build` separadamente, a menos que queira forçar um rebuild após mudanças no código.
 
 **Pronto!** Acesse:
 - Frontend: http://localhost:3000
@@ -99,8 +101,14 @@ docker-compose build frontend
 # Acessar shell do container backend
 docker-compose exec backend /bin/bash
 
-# Executar testes
-docker-compose exec backend pytest ../tests/ -v
+# Executar testes (os testes estão em /tests/ dentro do container)
+docker-compose exec backend pytest /tests/ -v
+
+# Testes com cobertura
+docker-compose exec backend pytest /tests/backend/ --cov=/app --cov-report=html
+
+# Copiar relatório de cobertura para host
+docker cp websocket-backend:/app/htmlcov ./htmlcov
 
 # Ver variáveis de ambiente
 docker-compose exec backend env
