@@ -1,0 +1,6 @@
+# Dependências de teste
+pytest==8.0.0
+pytest-asyncio==0.21.0  # Versão compatível
+pytest-cov==4.1.0
+httpx==0.26.0  # Para TestClient do FastAPI
+websockets==12.0  # Para testes de integração WebSocket
