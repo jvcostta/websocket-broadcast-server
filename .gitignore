@@ -1,0 +1,36 @@
+# Arquivos Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ambientes virtuais
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Pytest
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+
+# Distribuição
+dist/
+build/
+*.egg-info/
