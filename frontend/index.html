@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Event Panel - Dashboard Profissional</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    <div class="logo-text">
+                        <div class="logo-title">Bluelephant</div>
+                        <div class="logo-subtitle">websocket-broadcast-server</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="connection-info">
+                    <div class="connection-status-wrapper">
+                        <div id="sidebar-status" class="connection-indicator disconnected"></div>
+                        <div>
+                            <div class="connection-label">Conexão WebSocket</div>
+                            <div id="sidebar-status-text" class="connection-value">Desconectado</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <div>
+                        <h1 class="header-title">Dashboard de Eventos em Tempo Real</h1>
+                        <p class="header-subtitle">Monitoramento e análise de eventos do sistema</p>
+                    </div>
+                    <div class="header-actions">
+                        <div id="connection-badge" class="status-badge disconnected">
+                            <span class="status-dot"></span>
+                            <span id="connection-text">Desconectado</span>
+                        </div>
+                        <button id="disconnect-button" class="disconnect-button" disabled title="Desconectar do servidor">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                                <line x1="12" y1="2" x2="12" y2="12"></line>
+                            </svg>
+                            <span>Desconectar</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Metrics Grid -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">Eventos Recebidos</span>
+                        <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="metric-value" id="metric-received">0</div>
+                    <div class="metric-footer">
+                        <span class="metric-change positive" id="metric-received-change">+0</span>
+                        <span class="metric-description">desde a conexão</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">Eventos Enviados</span>
+                        <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </div>
+                    <div class="metric-value" id="metric-sent">0</div>
+                    <div class="metric-footer">
+                        <span class="metric-description">mensagens enviadas</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">Tempo Online</span>
+                        <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="metric-value" id="metric-uptime">00:00:00</div>
+                    <div class="metric-footer">
+                        <span class="metric-description">desde a última conexão</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Input -->
+            <div class="input-section">
+                <div class="section-header">
+                    <h2 class="section-title">Disparar Novo Evento</h2>
+                </div>
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="event-input" 
+                            class="event-input" 
+                            placeholder="Digite a descrição do evento (ex: Pedido #1234 criado)"
+                            autocomplete="off"
+                        >
+                        <button id="send-button" class="send-button" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                            <span>Disparar Evento</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events List -->
+            <div class="events-section">
+                <div class="section-header">
+                    <h2 class="section-title">Eventos Recebidos (Broadcast)</h2>
+                    <button id="clear-button" class="clear-button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Limpar Eventos
+                    </button>
+                </div>
+                <div id="events-container" class="events-container events-broadcast">
+                    <div class="empty-state">
+                        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <h3>Nenhum evento recebido ainda</h3>
+                        <p>Os eventos aparecerão aqui em tempo real assim que forem disparados</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Chat -->
+            <div class="events-section">
+                <div class="section-header">
+                    <h2 class="section-title">Eventos Modelo Chat</h2>
+                    <button id="clear-chat-button" class="clear-button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Limpar Chat
+                    </button>
+                </div>
+                <div id="chat-container" class="events-container events-chat">
+                    <div class="empty-state">
+                        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <h3>Nenhuma mensagem ainda</h3>
+                        <p>Suas mensagens aparecerão à direita, mensagens recebidas à esquerda</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
