@@ -12,7 +12,12 @@ import type {
 } from './types';
 import { MetricsCollector } from './metrics';
 
-const WS_URL = 'ws://localhost:8000/ws/events';
+// Detecta se está rodando via Docker (nginx proxy) ou localmente
+const WS_PROTOCOL = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const WS_HOST = window.location.hostname === 'localhost' && window.location.port === '3000'
+  ? 'localhost:8000' // Desenvolvimento local
+  : window.location.host; // Docker (via nginx proxy)
+const WS_URL = `${WS_PROTOCOL}//${WS_HOST}/ws/events`;
 const RECONNECT_DELAY = 3000;
 const METRICS_UPDATE_INTERVAL = 1000;
 
