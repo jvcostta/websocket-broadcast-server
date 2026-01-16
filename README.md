@@ -28,7 +28,10 @@ Implementação de comunicação bidirecional e persistente usando protocolo Web
 - Python 3.10+ | FastAPI | Uvicorn | Pydantic | WebSockets
 
 **Frontend:**
-- TypeScript | Vite | WebSocket API | CSS3
+- TypeScript | Vite | WebSocket API | CSS3 | Nginx
+
+**Infraestrutura:**
+- Docker | Docker Compose | Multi-stage builds
 
 **Testes:**
 - pytest | pytest-asyncio | pytest-cov | httpx
@@ -58,37 +61,73 @@ websocket-broadcast-server/
 ├── docs/
 │   ├── TESTING.md              # Documentação de testes
 │   └── desafio.md              # Especificação do desafio
-├── start.bat                   # Script de inicialização (Windows)
-└── start.sh                    # Script de inicialização (Linux/Mac)
+├── docker-compose.yml          # Orquestração de containers
+├── Dockerfile (backend)        # Imagem Docker do backend
+└── Dockerfile (frontend)       # Imagem Docker do frontend
 ```
 
-## 📦 Instalação
+## 📦 Instalação e Execução
 
 ### Pré-requisitos
+
+**Para Docker (Recomendado):**
+- Docker Desktop 20.10+ ou Docker Engine + Docker Compose
+- 2GB RAM livre
+
+**Para Execução Local:**
 - Python 3.10+
 - Node.js 18+
 - pip e npm
 
-### Opção 1: Inicialização Rápida
+---
 
-**Windows:**
+## 🐳 Opção 1: Docker (Recomendado)
+
+### Executar com Docker Compose
+
 ```bash
-start.bat
+# Clone o repositório
+git clone https://github.com/jvcostta/websocket-broadcast-server.git
+cd websocket-broadcast-server
+
+# Inicie os containers
+docker-compose up -d
+
+# Visualize os logs
+docker-compose logs -f
 ```
 
-**Linux/Mac:**
-```bash
-chmod +x start.sh
-./start.sh
-```
+**Acessar aplicação:**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- Documentação: http://localhost:8000/docs
 
-Os scripts instalam dependências e iniciam automaticamente backend e frontend.
+### Comandos Úteis Docker
+
+```bash
+# Parar containers
+docker-compose down
+
+# Rebuildar após mudanças no código
+docker-compose up -d --build
+
+# Ver status dos containers
+docker-compose ps
+
+# Logs de um serviço específico
+docker-compose logs -f backend
+docker-compose logs -f frontend
+
+# Executar testes no container
+docker-compose exec backend pytest ../tests/ -v
+```
 
 ---
 
-### Opção 2: Instalação Manual
+## 💻 Opção 2: Execução Local
 
-**Backend:**
+### Instalação Backend
+
 ```bash
 cd backend
 python -m venv .venv
@@ -102,18 +141,22 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**Frontend:**
+### Instalação Frontend
+
 ```bash
 cd frontend
 npm install
 ```
 
-## ▶️ Executando a Aplicação
-
-### Backend
+### Executar Backend Local
 
 ```bash
 cd backend
+
+# Ativar ambiente virtual (se não estiver ativo)
+# Windows: .venv\Scripts\activate
+# Linux/Mac: source .venv/bin/activate
+
 python main.py
 ```
 
@@ -122,7 +165,7 @@ Servidor disponível em:
 - **API:** `http://localhost:8000`
 - **Docs:** `http://localhost:8000/docs`
 
-### Frontend
+### Executar Frontend Local
 
 ```bash
 cd frontend
@@ -131,7 +174,7 @@ npm run dev
 
 Interface disponível em: `http://localhost:3000`
 
-### Build de Produção
+### Build de Produção Local
 
 ```bash
 cd frontend
@@ -139,7 +182,24 @@ npm run build
 npm run preview
 ```
 
+---
+
 ## 🧪 Executando Testes
+
+### Com Docker
+
+```bash
+# Executar todos os testes
+docker-compose exec backend pytest ../tests/ -v
+
+# Testes do backend apenas
+docker-compose exec backend pytest ../tests/backend/ -v
+
+# Testes com cobertura
+docker-compose exec backend pytest ../tests/backend/ --cov=. --cov-report=html
+```
+
+### Localmente
 
 ### Todos os testes (31 testes)
 
@@ -291,13 +351,15 @@ Frontend tenta reconectar automaticamente a cada 3 segundos em caso de perda de 
 
 ## 📝 Notas
 
-- **Produção:** Para ambientes de produção, considere usar Gunicorn com workers Uvicorn
+- **Docker:** Recomendado para desenvolvimento e produção. Ver [`docs/DOCKER.md`](docs/DOCKER.md) para guia completo
+- **Produção:** Para ambientes de produção sem Docker, considere usar Gunicorn com workers Uvicorn
 - **CORS:** Configurado para aceitar qualquer origem (restringir em produção)
 - **Persistência:** Não há persistência de dados (por escolha de escopo)
 - **Autenticação:** Não implementada (fora do escopo)
 
 ## 📚 Documentação Adicional
 
+- [Guia Docker Completo](docs/DOCKER.md)
 - [Documentação de Testes](docs/TESTING.md)
 - [Especificação do Desafio](docs/desafio.md)
 - [Estrutura do Projeto](docs/STRUCTURE.md)
