@@ -4,7 +4,6 @@
 .idea
 *.md
 docs/
-tests/
 .pytest_cache
 htmlcov
 .coverage
