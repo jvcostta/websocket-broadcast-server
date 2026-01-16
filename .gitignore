@@ -26,6 +26,8 @@ Thumbs.db
 
 # Pytest
 .pytest_cache/
+htmlcov/
+.coverage
 
 # MyPy
 .mypy_cache/
